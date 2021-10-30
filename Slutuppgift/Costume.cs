@@ -14,7 +14,7 @@ namespace Slutuppgift
         public bool IsAvailable { get; set; }
         public List<Costume> Costumes { get; set; } = new List<Costume>();
 
-        public void DisplayAllCostumes()
+        public void DisplayChosenCostume()
         {
             Console.SetCursorPosition(0, 0);
             foreach(var costume in Costumes)
@@ -25,28 +25,28 @@ namespace Slutuppgift
        
         public void StarterCostumes()
         {
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.M, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.L, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.XL, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.S, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.M, numberInStock: 3, isAvailable: true));
-            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.XXL, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.S, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.L, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.XL, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.M, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.L, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.XXL, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.S, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.M, numberInStock: 3, isAvailable: true));
-            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.L, numberInStock: 2, isAvailable: true));
-            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.L, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.XL, numberInStock: 1, isAvailable: true));
-            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.XXL, numberInStock: 2, isAvailable: true));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.M, numberInStock: 2));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.L, numberInStock: 1));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.XL, numberInStock: 1));
+            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.S, numberInStock: 2));
+            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.M, numberInStock: 3));
+            Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.XXL, numberInStock: 1));
+            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.S, numberInStock: 2));
+            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.L, numberInStock: 2));
+            Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.XL, numberInStock: 1));
+            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.M, numberInStock: 2));
+            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.L, numberInStock: 1));
+            Costumes.Add(new Superman(typeOfCostume: "Superman", size: Size.XXL, numberInStock: 2));
+            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.S, numberInStock: 1));
+            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.M, numberInStock: 3));
+            Costumes.Add(new Vampire(typeOfCostume: "Vampire", size: Size.L, numberInStock: 2));
+            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.L, numberInStock: 1));
+            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.XL, numberInStock: 1));
+            Costumes.Add(new Witch(typeOfCostume: "Witch", size: Size.XXL, numberInStock: 2));
         }
         public override string ToString()
         {
-            return $"Type of costume: {TypeOfCostume}, Costume size: {Size}, Number in stock: {NumberInStock} ";
+            return $"Type of costume: {TypeOfCostume}\n\t   Costume size: {Size}\n\t   Number in stock: {NumberInStock} \n";
         }
     }
 }

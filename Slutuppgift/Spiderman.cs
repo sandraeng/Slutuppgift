@@ -8,12 +8,12 @@ namespace Slutuppgift
 {
     class Spiderman : Costume 
     {
-        public Spiderman(string typeOfCostume, Size size, int numberInStock, bool isAvailable)
+        public Spiderman(string typeOfCostume, Size size, int numberInStock)
         {
             TypeOfCostume = typeOfCostume;
             Size = size;
             NumberInStock = numberInStock;
-            IsAvailable = isAvailable;
+            IsAvailable = true;
         }
     }
 }
