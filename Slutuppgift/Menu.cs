@@ -8,10 +8,11 @@ namespace Slutuppgift
 {
     class Menu
     {
+        public CostumeRentalApp costumeRentalApp { get; set; } = new CostumeRentalApp();
         public MenuSetup menuSetup { get; set; } = new MenuSetup();
         public int SelectedIndex { get; set; }
 
-        public void MainMenu(Costume costume)
+        public void MainMenu(Costume costume, Menu menu, Admin admin)
         {
             List<string> options = new List<string> { "Rent a costume", "Return a costume", "Log in", "Admin", "Exit" };
             menuSetup = new MenuSetup("Costume rental", options);
@@ -19,7 +20,7 @@ namespace Slutuppgift
             switch (SelectedIndex)
             {
                 case 0:
-                    RentACostume(costume);
+                    costumeRentalApp.RentACostume(costume, menu);
                     ClearScreen();
                     break;
                 case 1:
@@ -29,108 +30,16 @@ namespace Slutuppgift
                     LogIn();
                     break;
                 case 3:
-                    Admin();
+                    AdminMenu(costume, admin);
+                    ClearScreen();
                     break;
                 case 4:
-                    //Exit();
+                    Exit();
                     break;
             }
         }
-        private void RentACostume(Costume costume)
-        {
-            while (true)
-            {
-                ClearScreen();
-                List<string> options = new List<string> { "Fairy", "Devil", "Superman", "Spiderman", "Vampire", "Witch", "Go Back" };
-                menuSetup = new MenuSetup("Rent a costume, chose what costume you would like to rent", options);
-                SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                ClearScreen();
-                switch (SelectedIndex)
-                {
-                    case 0:
-                        options.Clear();
-                        foreach(var c in costume.Costumes)
-                        {
-                            if(c is Fairy)
-                            {
-                                options.Add(c.ToString());
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 1:
-                        options.Clear();
-                        foreach (var c in costume.Costumes)
-                        {
-                            if (c is Devil)
-                            {
-                                options.Add(c.ToString());
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 2:
-                        options.Clear();
-                        foreach (var c in costume.Costumes)
-                        {
-                            if (c is Superman)
-                            {
-                                options.Add(c.ToString());
-
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 3:
-                        options.Clear();
-                        foreach (var c in costume.Costumes)
-                        {
-                            if (c is Spiderman)
-                            {
-                                options.Add(c.ToString());
-
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 4:
-                        options.Clear();
-                        foreach (var c in costume.Costumes)
-                        {
-                            if (c is Vampire)
-                            {
-                                options.Add(c.ToString());
-
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 5:
-                        options.Clear();
-                        foreach (var c in costume.Costumes)
-                        {
-                            if (c is Witch)
-                            {
-                                options.Add(c.ToString());
-
-                            }
-                        }
-                        menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        continue;
-                    case 6:
-
-                        break;
-                }
-                break;
-            }
-
-        }
+       
+        
         private void ReturnACostume()
         {
 
@@ -139,14 +48,53 @@ namespace Slutuppgift
         {
 
         }
-        private void Admin()
+        private void AdminMenu(Costume costume, Admin admin)
         {
-
+            ClearScreen();
+            Console.CursorVisible = true;
+            Console.Write("\n\tUsername: ");
+            string inputUserName = Console.ReadLine();
+            Console.Write("\n\tPassWord: ");
+            string inputPassword = Console.ReadLine();
+            Console.CursorVisible = false;
+            if(inputUserName.ToUpper() == admin.UserName.ToUpper() && inputPassword.ToUpper() == admin.Password.ToUpper())
+            {
+                while (true)
+                {
+                    ClearScreen();
+                    List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Log out"};
+                    menuSetup = new MenuSetup("Admin", options);
+                    SelectedIndex = menuSetup.DisplaytInteractivMenu();
+                    switch (SelectedIndex)
+                    {
+                        case 0:
+                            CreateNewCostumeMenu(costume);
+                            continue;
+                        case 1:
+                            ReturnACostume();
+                            continue;
+                        case 2:
+                            LogIn();
+                            break;
+                    }
+                    break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("\tIncorrect username or password");
+            }
         }
-        public void RentalMenu()
+        
+        private void Exit()
         {
-            
-            
+            Console.WriteLine("\n\tAre you sure? If yes press ESCAPE, if no press any other key.");
+            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+            if (pressedKey.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(0);
+            }
+
         }
         public void CreateNewCostumeMenu(Costume costume)
         {
@@ -217,23 +165,7 @@ namespace Slutuppgift
                     break;
             }
         }
-        public void MembersMenu()
-        {
-            string[] menuOptions = { "Order history", "Rented costume", "Log out" };
-            foreach (var option in menuOptions)
-            {
-                Console.WriteLine(option);
-            }
-        }
-        public void ReturnMenu()
-        {
-            string[] menuOptions = { "Rent a costume", "Return a costume", "Log in", "Admin" };
-            foreach (var option in menuOptions)
-            {
-                Console.WriteLine(option);
-            }
-        }
-        private void ClearScreen()
+        public void ClearScreen()
         {
             Console.SetCursorPosition(1, 0);
             Console.WriteLine(@"                                                                                           
@@ -260,6 +192,7 @@ namespace Slutuppgift
                                                                                                                               
                                                                                                                               
                                                                                                                             ");
+            Console.SetCursorPosition(0, 0);
         }
     }
 }
