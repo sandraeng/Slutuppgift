@@ -83,14 +83,30 @@ namespace Slutuppgift
         }
         private void CreateMemberAccount(Costume costume, User user)
         {
-            Console.Write("\tPlease enter your name: ");
-            string userName = Console.ReadLine();
-            Console.Write("\tCreate a password: ");
-            string userPassword = Console.ReadLine();
-            Member newMember = new Member(userName, userPassword, costume);
-            user.Users.Add(newMember);
-            Console.WriteLine(newMember.ToString());
-            Console.ReadKey();
+            bool exit = true;
+            while (exit)
+            {
+                Console.Write("\tPlease enter your username: ");
+                string userName = Console.ReadLine();
+                for (int i = 0; i < user.Users.Count; i++)
+                {
+                    if (user.Users[i].UserName.ToUpper() == userName.ToUpper())
+                    {
+                        Console.WriteLine("That username is already in use, please enter a new one.");
+                        break;
+                    }
+                    else if (user.Users[i].UserName.ToUpper() != userName.ToUpper() && i == user.Users.Count - 1)
+                    {
+                        Console.Write("\tCreate a password: ");
+                        string userPassword = Console.ReadLine();
+                        Member newMember = new Member(userName, userPassword, costume);
+                        user.Users.Add(newMember);
+                        Console.WriteLine(newMember.ToString());
+                        Console.ReadKey();
+                        exit = false;
+                    }
+                }
+            }
         }
         private void RentChosenCostume(List<Costume> costume, Menu menu, User user)
         {
@@ -109,6 +125,158 @@ namespace Slutuppgift
                 break;
             }
         }
-
+        public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
+        {
+            menu.ClearScreen();
+            List<string> options = new List<string> { "Fairy", "Devil", "Superman", "Spiderman", "Vampire", "Witch", "Go back" };
+            menu.menuSetup = new MenuSetup("Add a new costume to inventory, chose what costume you would like to add", options);
+            menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
+            switch (menu.SelectedIndex)
+            {
+                case 0:
+                    Size tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Fairy)
+                        {
+                            if ((costume[c] as Fairy).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Fairy("Fairy", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 1:
+                    tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Devil)
+                        {
+                            if ((costume[c] as Devil).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Devil("Devil", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 2:
+                    tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Superman)
+                        {
+                            if ((costume[c] as Superman).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Superman("Superman", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 3:
+                    tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Spiderman)
+                        {
+                            if ((costume[c] as Spiderman).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Spiderman("Spiderman", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 4:
+                    tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Vampire)
+                        {
+                            if ((costume[c] as Vampire).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Vampire("Vampire", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 5:
+                    tempSize = CostumeSizeToAdd(menu);
+                    for (int c = 0; c < costume.Count; c++)
+                    {
+                        if (costume[c] is Witch)
+                        {
+                            if ((costume[c] as Witch).Size == tempSize)
+                            {
+                                costume[c].NumberInStock++;
+                                break;
+                            }
+                        }
+                        else if (c == costume.Count - 1)
+                        {
+                            costume.Add(new Witch("Witch", tempSize, 1));
+                            break;
+                        }
+                    }
+                    break;
+                case 6:
+                    break;
+            }
+        }
+        public Size CostumeSizeToAdd(Menu menu)
+        {
+            menu.ClearScreen();
+            Size size = Size.S;
+            List<string> options = new List<string> { "S", "M", "L", "XL", "XXL" };
+            menu.menuSetup = new MenuSetup("Chose what size the new costume has: ", options);
+            menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
+            switch (menu.SelectedIndex)
+            {
+                case 0:
+                    size = Size.S;
+                    break;
+                case 1:
+                    size = Size.M;
+                    break;
+                case 2:
+                    size = Size.L;
+                    break;
+                case 3:
+                    size = Size.XL;
+                    break;
+                case 4:
+                    size = Size.XXL;
+                    break;
+            }
+            return size;
+        }
     }
 }

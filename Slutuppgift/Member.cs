@@ -22,7 +22,7 @@ namespace Slutuppgift
         }
         public override string ToString()
         {
-            return $"Username: {UserName}\nPassword: {Password}\nRented costume: {RentedCostume.TypeOfCostume}\n\tSize:  {RentedCostume.Size}";
+            return $"\tUsername: {UserName}\n\tPassword: {Password}\n\tRented costume: {RentedCostume.TypeOfCostume}\n\tSize:  {RentedCostume.Size}";
         }
     }
 }
