@@ -38,30 +38,37 @@ namespace Slutuppgift
                     case 0:
                         temp = costume.FindAll(c => c is Fairy);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 1:
                         temp = costume.FindAll(c => c is Devil);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 2:
                         temp = costume.FindAll(c => c is Superman);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 3:
                         temp = costume.FindAll(c => c is Spiderman);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 4:
                         temp = costume.FindAll(c => c is Vampire);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 5:
                         temp = costume.FindAll(c => c is Witch);
                         DisplayCostumeSizeOptions(temp, menu, user);
-                        continue;
+                        break;
                     case 6:
 
                         break;
+                }
+                for (int i = 0; i < costume.Count; i++)
+                {
+                    if(costume[i].NumberInStock == 0)
+                    {
+                        costume.RemoveAt(i);
+                    }
                 }
                 break;
             }
@@ -72,11 +79,9 @@ namespace Slutuppgift
             List<string> options = new List<string>();
             foreach (var c in costume)
             {
-                if (c is Fairy || c is Devil || c is Superman || c is Spiderman || c is Vampire || c is Witch)
-                {
-                    options.Add(c.ToString());
-                }
+                options.Add(c.ToString());
             }
+            options.Add("\t Go back");
             menu.menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
             menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
             RentChosenCostume(costume, menu, user);
@@ -99,7 +104,9 @@ namespace Slutuppgift
                     {
                         Console.Write("\tCreate a password: ");
                         string userPassword = Console.ReadLine();
-                        Member newMember = new Member(userName, userPassword, costume);
+                        List<Costume> listCostume = new List<Costume>();
+                        listCostume.Add(costume);
+                        Member newMember = new Member(userName, userPassword, listCostume);
                         user.Users.Add(newMember);
                         Console.WriteLine(newMember.ToString());
                         Console.ReadKey();
@@ -112,7 +119,11 @@ namespace Slutuppgift
         {
             for (int i = 0; i < costume.Count;)
             {
-                if (costume[menu.SelectedIndex].NumberInStock == 0)
+                if(menu.SelectedIndex == costume.Count)
+                {
+                    break;
+                }
+                else if (costume[menu.SelectedIndex].NumberInStock == 0)
                 {
                     Console.WriteLine("\tThat costume is already rented at the moment, press any key to continue!");
                     Console.ReadKey();
@@ -124,10 +135,12 @@ namespace Slutuppgift
                 }
                 break;
             }
+            
         }
         public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
         {
             menu.ClearScreen();
+            List<Costume> temp = new List<Costume>();
             List<string> options = new List<string> { "Fairy", "Devil", "Superman", "Spiderman", "Vampire", "Witch", "Go back" };
             menu.menuSetup = new MenuSetup("Add a new costume to inventory, chose what costume you would like to add", options);
             menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
@@ -135,6 +148,7 @@ namespace Slutuppgift
             {
                 case 0:
                     Size tempSize = CostumeSizeToAdd(menu);
+                    temp = costume.FindAll(c => c is Fairy);
                     for (int c = 0; c < costume.Count; c++)
                     {
                         if (costume[c] is Fairy)

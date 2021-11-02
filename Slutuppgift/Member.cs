@@ -8,21 +8,17 @@ namespace Slutuppgift
 {
     class Member : User
     {
-        public Costume RentedCostume { get; set; }
-        public Member(string userName, string password, Costume rentedCostume)
+        public List<Costume> RentedCostume { get; set; } = new List<Costume>();
+        public Member(string userName, string password, List<Costume> rentedCostume)
         {
             UserName = userName;
             Password = password;
             RentedCostume = rentedCostume;
         }
-        public Member(string userName, string password)
-        {
-            UserName = userName;
-            Password = password;
-        }
+        
         public override string ToString()
         {
-            return $"\tUsername: {UserName}\n\tPassword: {Password}\n\tRented costume: {RentedCostume.TypeOfCostume}\n\tSize:  {RentedCostume.Size}";
+            return $"\tUsername: {UserName}\n\tPassword: {Password}";
         }
     }
 }

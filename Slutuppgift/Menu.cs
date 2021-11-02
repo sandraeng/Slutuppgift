@@ -26,7 +26,7 @@ namespace Slutuppgift
                     ClearScreen();
                     break;
                 case 1:
-                    MemberLogIn(costume, user);
+                    MemberMenu(costume, user);
                     break;
                 case 2:
                     AdminMenu(costume, user, menu);
@@ -37,11 +37,19 @@ namespace Slutuppgift
                     break;
             }
         }
-        private void ReturnACostume()
+        private void ReturnACostume(List<Costume> costume, User user)
         {
+            List<string> options = new List<string>();
 
+            for (int i = 0; i < (user as Member).RentedCostume.Count; i++)
+            {
+                options.Add((user as Member).RentedCostume[i].ToString());
+            }
+            menuSetup = new MenuSetup("Which costume do you want to return", options);
+            SelectedIndex = menuSetup.DisplaytInteractivMenu();
+            
         }
-        private void MemberLogIn(List<Costume> costume, User user)
+        private void MemberMenu(List<Costume> costume, User user)
         {
             bool exit = true;
             while (exit)
@@ -59,6 +67,7 @@ namespace Slutuppgift
                         && inputUserName.ToUpper() == user.Users[i].UserName.ToUpper() 
                         && inputPassword.ToUpper() == user.Users[i].Password.ToUpper())
                     {
+                        Start:
                         ClearScreen();
                         List<string> options = new List<string> { "Check rented costume", "Return costume", "Log out" };
                         menuSetup = new MenuSetup("Member", options);
@@ -66,9 +75,10 @@ namespace Slutuppgift
                         switch (SelectedIndex)
                         {
                             case 0:
-                                continue;
+                                goto Start;
                             case 1:
-                                continue;
+                                ReturnACostume(costume, user.Users[i]);
+                                goto Start;
                             case 2:
                                 exit = false;
                                 break;
@@ -130,6 +140,7 @@ namespace Slutuppgift
                                 exit = false;
                                 break;
                         }
+                        break;
                     }
                     else if ((user.Users[i] is Admin) && (inputUserName.ToUpper() != user.Users[i].UserName.ToUpper()
                             || inputPassword.ToUpper() != user.Users[i].Password.ToUpper()) && i == user.Users.Count - 1 

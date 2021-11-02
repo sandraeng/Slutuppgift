@@ -76,9 +76,5 @@ namespace Slutuppgift
 
             return SelectedMenuIndex;
         }
-        public void MenuSwitchOptions(int selectedIndex)
-        {
-            
-        }
     }
 }
