@@ -13,7 +13,6 @@ namespace Slutuppgift
             TypeOfCostume = typeOfCostume;
             Size = size;
             NumberInStock = numberInStock;
-            IsAvailable = true;
         }
     }
 }

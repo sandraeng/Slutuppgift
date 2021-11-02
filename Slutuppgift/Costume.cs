@@ -11,17 +11,8 @@ namespace Slutuppgift
         public string TypeOfCostume { get; set; }
         public Size Size { get; set; }
         public int NumberInStock { get; set; }
-        public bool IsAvailable { get; set; }
         public List<Costume> Costumes { get; set; } = new List<Costume>();
 
-        public void DisplayChosenCostume()
-        {
-            Console.SetCursorPosition(0, 0);
-            foreach(var costume in Costumes)
-            {
-                Console.WriteLine(costume.ToString());
-            }
-        }
        
         public void StarterCostumes()
         {
@@ -46,7 +37,7 @@ namespace Slutuppgift
         }
         public override string ToString()
         {
-            return $"Type of costume: {TypeOfCostume}\n\t   Costume size: {Size}\n\t   Number in stock: {NumberInStock} \n";
+            return $"\tType of costume: {TypeOfCostume}\n\t   Costume size: {Size}\n\t   Number in stock: {NumberInStock} \n";
         }
     }
 }

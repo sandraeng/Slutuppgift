@@ -6,9 +6,23 @@ using System.Threading.Tasks;
 
 namespace Slutuppgift
 {
-    class Member
+    class Member : User
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        public Costume RentedCostume { get; set; }
+        public Member(string userName, string password, Costume rentedCostume)
+        {
+            UserName = userName;
+            Password = password;
+            RentedCostume = rentedCostume;
+        }
+        public Member(string userName, string password)
+        {
+            UserName = userName;
+            Password = password;
+        }
+        public override string ToString()
+        {
+            return $"Username: {UserName}\nPassword: {Password}\nRented costume: {RentedCostume.TypeOfCostume}\n\tSize:  {RentedCostume.Size}";
+        }
     }
 }

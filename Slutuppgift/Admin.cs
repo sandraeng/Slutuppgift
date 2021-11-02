@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Slutuppgift
 {
-    class Admin
+    class Admin : User
     {
-        public string UserName { get; set; }
-        public string Password { get; set; }
+        
         public Admin(string userName, string password)
         {
             UserName = userName;

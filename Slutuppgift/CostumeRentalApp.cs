@@ -8,22 +8,22 @@ namespace Slutuppgift
 {
     class CostumeRentalApp
     {
-        //public Menu menu { get; set; } = new Menu();
         public Costume Costumes { get; set; } = new Costume();
         public void StartApp()
         {
-            Admin admin = new Admin("Sandra", "hejsan");
+            User admin = new Admin("Sandra", "hejsan");
+            admin.Users.Add(admin);
             Menu menu = new Menu();
             Costumes.StarterCostumes();
             while (true)
             {
                 Console.CursorVisible = false;
                 Console.Title = "The best costume rental place!";
-                menu.MainMenu(Costumes, menu, admin);
+                menu.MainMenu(Costumes.Costumes, menu, admin);
 
             }
         }
-        public void RentACostume(Costume costume, Menu menu)
+        public void RentACostume(List<Costume> costume, Menu menu, User user)
         {
             while (true)
             {
@@ -36,28 +36,28 @@ namespace Slutuppgift
                 switch (menu.SelectedIndex)
                 {
                     case 0:
-                        temp = costume.Costumes.FindAll(c => c is Fairy);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Fairy);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 1:
-                        temp = costume.Costumes.FindAll(c => c is Devil);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Devil);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 2:
-                        temp = costume.Costumes.FindAll(c => c is Superman);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Superman);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 3:
-                        temp = costume.Costumes.FindAll(c => c is Spiderman);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Spiderman);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 4:
-                        temp = costume.Costumes.FindAll(c => c is Vampire);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Vampire);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 5:
-                        temp = costume.Costumes.FindAll(c => c is Witch);
-                        DisplayCostumeSizeOptions(temp, menu);
+                        temp = costume.FindAll(c => c is Witch);
+                        DisplayCostumeSizeOptions(temp, menu, user);
                         continue;
                     case 6:
 
@@ -67,7 +67,7 @@ namespace Slutuppgift
             }
 
         }
-        public void DisplayCostumeSizeOptions(List<Costume> costume, Menu menu)
+        public void DisplayCostumeSizeOptions(List<Costume> costume, Menu menu, User user)
         {
             List<string> options = new List<string>();
             foreach (var c in costume)
@@ -79,25 +79,32 @@ namespace Slutuppgift
             }
             menu.menuSetup = new MenuSetup("Rent a costume, chose what size you would like", options);
             menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
-            RentChosenCostume(costume, menu);
+            RentChosenCostume(costume, menu, user);
         }
-        private void RentChosenCostume(List<Costume> costume, Menu menu)
+        private void CreateMemberAccount(Costume costume, User user)
+        {
+            Console.Write("\tPlease enter your name: ");
+            string userName = Console.ReadLine();
+            Console.Write("\tCreate a password: ");
+            string userPassword = Console.ReadLine();
+            Member newMember = new Member(userName, userPassword, costume);
+            user.Users.Add(newMember);
+            Console.WriteLine(newMember.ToString());
+            Console.ReadKey();
+        }
+        private void RentChosenCostume(List<Costume> costume, Menu menu, User user)
         {
             for (int i = 0; i < costume.Count;)
             {
-                if (!costume[menu.SelectedIndex].IsAvailable)
+                if (costume[menu.SelectedIndex].NumberInStock == 0)
                 {
                     Console.WriteLine("\tThat costume is already rented at the moment, press any key to continue!");
                     Console.ReadKey();
                 }
                 else if (costume[menu.SelectedIndex].NumberInStock > 0)
                 {
+                    CreateMemberAccount(costume[menu.SelectedIndex], user);
                     costume[menu.SelectedIndex].NumberInStock--;
-                }
-                if (costume[menu.SelectedIndex].NumberInStock == 0)
-                {
-                    costume[menu.SelectedIndex].IsAvailable = false;
-                    break;
                 }
                 break;
             }
