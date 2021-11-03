@@ -16,12 +16,12 @@ namespace Slutuppgift
        
         public void StarterCostumes()
         {
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.M, numberInStock: 2));
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.L, numberInStock: 1));
-            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.XL, numberInStock: 1));
             Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.S, numberInStock: 2));
             Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.M, numberInStock: 3));
             Costumes.Add(new Devil(typeOfCostume: "Devil", size: Size.XXL, numberInStock: 1));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.M, numberInStock: 2));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.L, numberInStock: 1));
+            Costumes.Add(new Fairy(typeOfCostume: "Fairy", size: Size.XL, numberInStock: 1));
             Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.S, numberInStock: 2));
             Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.L, numberInStock: 2));
             Costumes.Add(new Spiderman(typeOfCostume: "Spiderman", size: Size.XL, numberInStock: 1));

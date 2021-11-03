@@ -18,7 +18,7 @@ namespace Slutuppgift
         
         public override string ToString()
         {
-            return $"\tUsername: {UserName}\n\tPassword: {Password}";
+            return $"\tChosen username: {UserName}\n\tChosen password: {Password}";
         }
     }
 }

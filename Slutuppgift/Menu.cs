@@ -23,39 +23,27 @@ namespace Slutuppgift
             {
                 case 0:
                     costumeRentalApp.RentACostume(costume, menu, user);
-                    ClearScreen();
                     break;
                 case 1:
-                    MemberMenu(costume, user);
+                    MemberMenu(costume, user, menu);
                     break;
                 case 2:
                     AdminMenu(costume, user, menu);
-                    ClearScreen();
                     break;
                 case 3:
                     Exit();
                     break;
             }
         }
-        private void ReturnACostume(List<Costume> costume, User user)
-        {
-            List<string> options = new List<string>();
-
-            for (int i = 0; i < (user as Member).RentedCostume.Count; i++)
-            {
-                options.Add((user as Member).RentedCostume[i].ToString());
-            }
-            menuSetup = new MenuSetup("Which costume do you want to return", options);
-            SelectedIndex = menuSetup.DisplaytInteractivMenu();
-            
-        }
-        private void MemberMenu(List<Costume> costume, User user)
+        
+        private void MemberMenu(List<Costume> costume, User user, Menu menu)
         {
             bool exit = true;
             while (exit)
             {
                 ClearScreen();
                 Console.CursorVisible = true;
+                Console.WriteLine("\n\tLog in as member: ");
                 Console.Write("\n\tUsername: ");
                 string inputUserName = Console.ReadLine();
                 Console.Write("\n\tPassword: ");
@@ -75,9 +63,10 @@ namespace Slutuppgift
                         switch (SelectedIndex)
                         {
                             case 0:
+                                CheckInventoryMember((user.Users[i] as Member).RentedCostume);
                                 goto Start;
                             case 1:
-                                ReturnACostume(costume, user.Users[i]);
+                                costumeRentalApp.ReturnACostume(costume, user.Users[i], menu);
                                 goto Start;
                             case 2:
                                 exit = false;
@@ -111,6 +100,7 @@ namespace Slutuppgift
             {
                 ClearScreen();
                 Console.CursorVisible = true;
+                Console.WriteLine("\n\tLog in as admin:");
                 Console.Write("\n\tUsername: ");
                 string inputUserName = Console.ReadLine();
                 Console.Write("\n\tPassword: ");
@@ -124,7 +114,7 @@ namespace Slutuppgift
                     {
                         Start:
                         ClearScreen();
-                        List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Log out"};
+                        List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Member list", "Log out"};
                         menuSetup = new MenuSetup("Admin", options);
                         SelectedIndex = menuSetup.DisplaytInteractivMenu();
                         switch (SelectedIndex)
@@ -137,6 +127,25 @@ namespace Slutuppgift
                                 Console.Clear();
                                 goto Start;
                             case 2:
+                                ClearScreen();
+                                if(user.Users.Count == 1)
+                                {
+                                    Console.WriteLine("\n\tNo members");
+                                }
+                                else
+                                {
+                                    foreach (var member in user.Users)
+                                    {
+                                        if(member is Member)
+                                        {
+                                            Console.WriteLine(member.ToString());
+                                            Console.WriteLine();
+                                        }
+                                    }
+                                }
+                                Console.ReadKey();
+                                goto Start;
+                            case 3:
                                 exit = false;
                                 break;
                         }
@@ -170,6 +179,23 @@ namespace Slutuppgift
             }
             Console.ReadKey();
         }
+        private void CheckInventoryMember(List<Costume> costume)
+        {
+            ClearScreen();
+            if(costume.Count == 0)
+            {
+                Console.WriteLine("\n\n\tYou have no rented costumes");
+            }
+            else
+            {
+                foreach (var c in costume)
+                {
+                    Console.WriteLine($"\n\n\tType of costume: {c.TypeOfCostume}\n\tSize: {c.Size}");
+                }
+            }
+            Console.WriteLine("\n\n\tPress any key to go back");
+            Console.ReadKey();
+        }
         private void Exit()
         {
             Console.WriteLine("\n\tAre you sure? If yes press ESCAPE, if no press any other key.");
@@ -182,7 +208,7 @@ namespace Slutuppgift
         }
         public void ClearScreen()
         {
-            Console.SetCursorPosition(1, 0);
+            Console.SetCursorPosition(0, 0);
             Console.WriteLine(@"                                                                                           
                                                                                                                               
                                                                                                                             
