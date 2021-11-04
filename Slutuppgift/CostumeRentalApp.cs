@@ -15,26 +15,8 @@ namespace Slutuppgift
         {
             User user = new Admin("Sandra", "hejsan");
             Menu menu = new Menu();
-            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
-            if (File.Exists(filePath) == false)
-            {
-                Costumes.StarterCostumes();
-            }
-            else
-            {
-                string jsonString = File.ReadAllText(filePath);
-                Costumes.Costumes = JsonConvert.DeserializeObject<List<Costume>>(jsonString);
-            }
-            filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
-            if (File.Exists(filePath) == false)
-            {
-                SerializeMembers(user.Members);
-            }
-            else
-            {
-                string jsonString = File.ReadAllText(filePath);
-                user.Members = JsonConvert.DeserializeObject<List<Member>>(jsonString);
-            }
+            JsonHelper.DeserializeCostumes(Costumes);
+            JsonHelper.DeserializeMembers(user);
             while (true)
             {
                 Console.CursorVisible = false;
@@ -90,8 +72,8 @@ namespace Slutuppgift
                 }
                 break;
             }
-            SerializeCostumes(costume);
-            SerializeMembers(user.Members);
+            JsonHelper.SerializeCostumes(costume);
+            JsonHelper.SerializeMembers(user.Members);
         }
         public void DisplayCostumeSizeOptions(List<Costume> costume, Menu menu, User user)
         {
@@ -247,7 +229,7 @@ namespace Slutuppgift
                 if (user.Members.Count == 0)
                 {
                     menu.ClearScreen();
-                    Console.WriteLine("\n\tThere is no members listed, why dont you become our first!\n\tPress any key to go back to main meny.");
+                    Console.WriteLine("\n\tThere is no members listed, why dont you rent something and become our first!\n\tPress any key to go back to main meny.");
                     Console.ReadKey();
                 }
                 else
@@ -342,8 +324,8 @@ namespace Slutuppgift
                 break;
             }
             SortAllCostumes(costume);
-            SerializeCostumes(costume);
-            SerializeMembers(user.Members);
+            JsonHelper.SerializeCostumes(costume);
+            JsonHelper.SerializeMembers(user.Members);
         }
         
         public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
@@ -414,7 +396,7 @@ namespace Slutuppgift
                     break;
             }
             SortAllCostumes(costume);
-            SerializeCostumes(costume);
+            JsonHelper.SerializeCostumes(costume);
         }
         private bool CheckIfCostumeSizeExist(List<Costume> costume, Size tempSize)
         {
@@ -462,44 +444,15 @@ namespace Slutuppgift
             }
             return size;
         }
-        public void SerializeCostumes(List<Costume> costume)
-        {
-            var jsonString = JsonConvert.SerializeObject(costume);
-            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
-            if (File.Exists(filePath) == false)
-            {
-                File.WriteAllText(filePath, jsonString);
-            }
-            else
-            {
-                File.Delete(filePath);
-                File.WriteAllText(filePath, jsonString);
-            }
-        }
-        public void SerializeMembers(List<Member> members)
-        {
-            var jsonString = JsonConvert.SerializeObject(members);
-            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
-            if (File.Exists(filePath) == false)
-            {
-                File.WriteAllText(filePath, jsonString);
-            }
-            else
-            {
-                File.Delete(filePath);
-                File.WriteAllText(filePath, jsonString);
-            }
-        }
         public void Exit(List<Costume> costume)
         {
             Console.WriteLine("\n\tAre you sure? If yes press ESCAPE, if no press any other key.");
             ConsoleKeyInfo pressedKey = Console.ReadKey(true);
             if (pressedKey.Key == ConsoleKey.Escape)
             {
-                SerializeCostumes(costume);
+                JsonHelper.SerializeCostumes(costume);
                 Environment.Exit(0);
             }
-
         }
     }
 }

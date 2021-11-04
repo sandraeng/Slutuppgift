@@ -1,1 +1,1 @@
-[{"RentedCostume":[],"PreviouslyRentedCostumes":[{"TypeOfCostume":"Devil","Size":1,"NumberInStock":3,"Costumes":[]}],"UserAsMember":"Member","Members":[],"UserName":"kalle","Password":"kalle"}]
+[{"RentedCostume":[{"TypeOfCostume":"Witch","Size":2,"NumberInStock":0,"Costumes":[]}],"PreviouslyRentedCostumes":[{"TypeOfCostume":"Devil","Size":1,"NumberInStock":3,"Costumes":[]},{"TypeOfCostume":"Fairy","Size":0,"NumberInStock":1,"Costumes":[]}],"UserAsMember":"Member","Members":[],"UserName":"kalle","Password":"kalle"}]

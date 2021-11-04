@@ -71,6 +71,8 @@ namespace Slutuppgift
                                 costumeRentalApp.ReturnACostume(costume, user.Members[i], menu);
                                 goto Start;
                             case 2:
+                                menu.ClearScreen();
+                                Console.WriteLine("\n\tPreviously rented costumes: \n");
                                 if(user.Members[i].PreviouslyRentedCostumes.Count == 0)
                                 {
                                     Console.WriteLine("\n\tYou have not rented a costume before, press any key to go back");
@@ -109,17 +111,6 @@ namespace Slutuppgift
                         }
                     }
                 }
-            }
-            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
-            string jsonString = JsonConvert.SerializeObject(user.Members);
-            if (File.Exists(filePath) == false)
-            {
-                File.WriteAllText(filePath, jsonString);
-            }
-            else
-            {
-                File.Delete(filePath);
-                File.WriteAllText(filePath, jsonString);
             }
         }
         private void AdminMenu(List<Costume> costume, User user, Menu menu)
