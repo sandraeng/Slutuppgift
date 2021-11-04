@@ -13,11 +13,10 @@ namespace Slutuppgift
         public Costume Costumes { get; set; } = new Costume();
         public void StartApp()
         {
-            User admin = new Admin("Sandra", "hejsan");
-            admin.Users.Add(admin);
+            User user = new Admin("Sandra", "hejsan");
             Menu menu = new Menu();
             string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
-            if(File.Exists(filePath) == false)
+            if (File.Exists(filePath) == false)
             {
                 Costumes.StarterCostumes();
             }
@@ -26,11 +25,21 @@ namespace Slutuppgift
                 string jsonString = File.ReadAllText(filePath);
                 Costumes.Costumes = JsonConvert.DeserializeObject<List<Costume>>(jsonString);
             }
+            filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
+            if (File.Exists(filePath) == false)
+            {
+                SerializeMembers(user.Members);
+            }
+            else
+            {
+                string jsonString = File.ReadAllText(filePath);
+                user.Members = JsonConvert.DeserializeObject<List<Member>>(jsonString);
+            }
             while (true)
             {
                 Console.CursorVisible = false;
                 Console.Title = "The best costume rental place!";
-                menu.MainMenu(Costumes.Costumes, menu, admin);
+                menu.MainMenu(Costumes.Costumes, menu, user);
             }
         }
         public void RentACostume(List<Costume> costume, Menu menu, User user)
@@ -81,6 +90,8 @@ namespace Slutuppgift
                 }
                 break;
             }
+            SerializeCostumes(costume);
+            SerializeMembers(user.Members);
         }
         public void DisplayCostumeSizeOptions(List<Costume> costume, Menu menu, User user)
         {
@@ -95,134 +106,13 @@ namespace Slutuppgift
             Console.WriteLine("");
             RentChosenCostume(costume, menu, user);
         }
-        private bool CreateMemberAccount(Costume costume, User user, Menu menu)
-        {
-            while (true)
-            {
-                Start:
-                menu.ClearScreen();
-                Console.WriteLine($"\n\tChosen costume:\n\tType of costume: {costume.TypeOfCostume}\n\tSize: {costume.Size}\n");
-                Console.WriteLine("\n\tCreate a username that is at least 3 letters long.");
-                Console.CursorVisible = true;
-                Console.Write("\n\tUsername: ");
-                string userName = Console.ReadLine();
-                for (int i = 0; i < user.Users.Count; i++)
-                {
-                    if (user.Users[i].UserName.ToUpper() == userName.ToUpper())
-                    {
-                        Console.WriteLine("\n\tThat username is already in use, press ENTER to try again or press ESCAPE to go back");
-                        ConsoleKeyInfo keyPressed = Console.ReadKey(true);
-                        if(keyPressed.Key == ConsoleKey.Enter)
-                        {
-                            goto Start;
-                        }
-                        else if(keyPressed.Key == ConsoleKey.Escape)
-                        {
-                            return false;
-                        }
-                    }
-                    else if(userName.Length < 3)
-                    {
-                        Console.CursorVisible = false;
-                        Console.WriteLine("\n\tThat username is to short, press ENTER to try again or press ESCAPE to go back");
-                        ConsoleKeyInfo keyPressed = Console.ReadKey(true);
-                        if (keyPressed.Key == ConsoleKey.Enter)
-                        {
-                            goto Start;
-                        }
-                        else if (keyPressed.Key == ConsoleKey.Escape)
-                        {
-                            return false;
-                        }
-                    }
-                    else if (user.Users[i].UserName.ToUpper() != userName.ToUpper() && i == user.Users.Count - 1)
-                    {
-                        while (true)
-                        {
-                            Console.SetCursorPosition(0, 10);
-                            Console.Write("\tCreate a password: ");
-                            string userPassword = Console.ReadLine();
-                            if(userPassword.Length < 3)
-                            {
-                                Console.CursorVisible = false;
-                                Console.WriteLine("\n\tThat password is to short, press any key to try again");
-                                Console.ReadKey();
-                                Console.SetCursorPosition(0, 12);
-                                Console.WriteLine("\t                                                         ");
-                                Console.CursorVisible = true;
-                            }
-                            else
-                            {
-                                Console.CursorVisible = false;
-                                List<Costume> listCostume = new List<Costume>();
-                                listCostume.Add(costume);
-                                Member newMember = new Member(userName, userPassword, listCostume);
-                                user.Users.Add(newMember);
-                                Console.WriteLine(newMember.ToString());
-                                Console.WriteLine("\n\tYou have succesfully rented chosen costume");
-                                Console.ReadKey();
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-                break;
-            }
-            return true;
-        }
-        private void RentChosenCostumeMember(List<Costume> costume, Menu menu, User user)
-        {
-            while (true)
-            {
-                Start:
-                menu.ClearScreen();
-                Console.CursorVisible = true;
-                Console.WriteLine("\n\tEnter your info to rent the chosen costume\n");
-                Console.Write("\n\tUsername: ");
-                string inputUserName = Console.ReadLine();
-                Console.Write("\n\tPassword: ");
-                string inputPassword = Console.ReadLine();
-                Console.CursorVisible = false;
-                for (int i = 0; i < user.Users.Count; i++)
-                {
-                    if ((user.Users[i] is Member)
-                        && inputUserName.ToUpper() == user.Users[i].UserName.ToUpper()
-                        && inputPassword.ToUpper() == user.Users[i].Password.ToUpper())
-                    {
-
-                        (user.Users[i] as Member).RentedCostume.Add(costume[menu.SelectedIndex]);
-                        costume[menu.SelectedIndex].NumberInStock--;
-                        Console.WriteLine($"\n\tYou have succesfully rented:\n\tCostume type: {costume[menu.SelectedIndex].TypeOfCostume}\n\tIn size: {costume[menu.SelectedIndex].Size}\n\n\tPress any key to continue");
-                        Console.ReadKey();
-                        break;
-                    }
-                    else if ((user.Users[i] is Member) && (inputUserName.ToUpper() != user.Users[i].UserName.ToUpper()
-                            || inputPassword.ToUpper() != user.Users[i].Password.ToUpper()) && i == user.Users.Count - 1
-                            || !(user.Users[i] is Member) && i == user.Users.Count - 1)
-                    {
-                        Console.WriteLine("\n\tInvalid username or Password, press ENTER to try again or press any other key to go back");
-                        ConsoleKeyInfo pressedKey = Console.ReadKey(true);
-                        if (pressedKey.Key == ConsoleKey.Enter)
-                        {
-                            goto Start;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-                break;
-            }
-        }
         private void RentChosenCostume(List<Costume> costume, Menu menu, User user)
         {
             while (true)
             {
                 for (int i = 0; i < costume.Count;)
                 {
-                    if(menu.SelectedIndex == costume.Count)
+                    if (menu.SelectedIndex == costume.Count)
                     {
                         break;
                     }
@@ -240,15 +130,15 @@ namespace Slutuppgift
                         }
                         else if (keyPressed.Key == ConsoleKey.N)
                         {
-                            if(keyPressed.Key == ConsoleKey.Escape)
+                            if (keyPressed.Key == ConsoleKey.Escape)
                             {
                                 break;
                             }
                             else
                             {
                                 bool controll = CreateMemberAccount(costume[menu.SelectedIndex], user, menu);
-                                if (controll) 
-                                { 
+                                if (controll)
+                                {
                                     costume[menu.SelectedIndex].NumberInStock--;
                                 }
                                 else
@@ -271,6 +161,141 @@ namespace Slutuppgift
                 break;
             }
         }
+        private bool CreateMemberAccount(Costume costume, User user, Menu menu)
+        {
+            while (true)
+            {
+                Start:
+                menu.ClearScreen();
+                Console.WriteLine($"\n\tChosen costume:\n\tType of costume: {costume.TypeOfCostume}\n\tSize: {costume.Size}\n");
+                Console.WriteLine("\n\tCreate a username and a password that is at least 3 letters long.");
+                Console.CursorVisible = true;
+                Console.Write("\n\tUsername: ");
+                string userName = Console.ReadLine();
+                for (int i = 0; i <= user.Members.Count; i++)
+                {
+                    if(user.Members.Count != 0)
+                    {
+                        if (user.Members[i].UserName.ToUpper() == userName.ToUpper())
+                        {
+                            Console.WriteLine("\n\tThat username is already in use, press ENTER to try again or press ESCAPE to go back");
+                            ConsoleKeyInfo keyPressed = Console.ReadKey(true);
+                            if(keyPressed.Key == ConsoleKey.Enter)
+                            {
+                                goto Start;
+                            }
+                            else if(keyPressed.Key == ConsoleKey.Escape)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                    else if(userName.Length < 3)
+                    {
+                        Console.CursorVisible = false;
+                        Console.WriteLine("\n\tThat username is to short, press ENTER to try again or press ESCAPE to go back");
+                        ConsoleKeyInfo keyPressed = Console.ReadKey(true);
+                        if (keyPressed.Key == ConsoleKey.Enter)
+                        {
+                            goto Start;
+                        }
+                        else if (keyPressed.Key == ConsoleKey.Escape)
+                        {
+                            return false;
+                        }
+                    }
+                    else if (user.Members.Count == 0 || (user.Members[i].UserName.ToUpper() != userName.ToUpper() && i == user.Members.Count - 1))
+                    {
+                        while (true)
+                        {
+                            Console.SetCursorPosition(0, 10);
+                            Console.Write("\tCreate a password: ");
+                            string userPassword = Console.ReadLine();
+                            if(userPassword.Length < 3)
+                            {
+                                Console.CursorVisible = false;
+                                Console.WriteLine("\n\tThat password is to short, press any key to try again");
+                                Console.ReadKey();
+                                Console.SetCursorPosition(0, 12);
+                                Console.WriteLine("\t                                                         ");
+                                Console.CursorVisible = true;
+                            }
+                            else
+                            {
+                                Console.CursorVisible = false;
+                                List<Costume> listCostume = new List<Costume>();
+                                listCostume.Add(costume);
+                                Member newMember = new Member(userName, userPassword, listCostume);
+                                user.Members.Add(newMember);
+                                Console.WriteLine(newMember.ToString());
+                                Console.WriteLine("\n\tYou have succesfully rented chosen costume");
+                                Console.ReadKey();
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+            return true;
+        }
+        private void RentChosenCostumeMember(List<Costume> costume, Menu menu, User user)
+        {
+            while (true)
+            {
+                if (user.Members.Count == 0)
+                {
+                    menu.ClearScreen();
+                    Console.WriteLine("\n\tThere is no members listed, why dont you become our first!\n\tPress any key to go back to main meny.");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Start:
+                    menu.ClearScreen();
+                    Console.CursorVisible = true;
+                    Console.WriteLine("\n\tEnter your info to rent the chosen costume\n");
+                    Console.Write("\n\tUsername: ");
+                    string inputUserName = Console.ReadLine();
+                    Console.Write("\n\tPassword: ");
+                    string inputPassword = Console.ReadLine();
+                    Console.CursorVisible = false;
+                    for (int i = 0; i < user.Members.Count; i++)
+                    {
+                    
+                        if ((user.Members[i] is Member)
+                            && inputUserName.ToUpper() == user.Members[i].UserName.ToUpper()
+                            && inputPassword.ToUpper() == user.Members[i].Password.ToUpper())
+                        {
+
+                            (user.Members[i] as Member).RentedCostume.Add(costume[menu.SelectedIndex]);
+                            costume[menu.SelectedIndex].NumberInStock--;
+                            Console.WriteLine($"\n\tYou have succesfully rented:\n\tCostume type: {costume[menu.SelectedIndex].TypeOfCostume}\n\tIn size: {costume[menu.SelectedIndex].Size}\n\n\tPress any key to continue");
+                            Console.ReadKey();
+                            break;
+                        }
+                        else if ((user.Members[i] is Member) && (inputUserName.ToUpper() != user.Members[i].UserName.ToUpper()
+                                || inputPassword.ToUpper() != user.Members[i].Password.ToUpper()) && i == user.Members.Count - 1
+                                || !(user.Members[i] is Member) && i == user.Members.Count - 1)
+                        {
+                            Console.WriteLine("\n\tInvalid username or Password, press ENTER to try again or press any other key to go back");
+                            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+                            if (pressedKey.Key == ConsoleKey.Enter)
+                            {
+                                goto Start;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        
         public void ReturnACostume(List<Costume> costume, User user, Menu menu)
         {
             while (true)
@@ -294,29 +319,29 @@ namespace Slutuppgift
                 }
                 else
                 {
-                    if (costume.Contains((user as Member).RentedCostume[menu.SelectedIndex]))
+                    for (int c = 0; c < costume.Count; c++)
                     {
-                        for (int i = 0; i < costume.Count; i++)
+                        if (costume[c].TypeOfCostume == (user as Member).RentedCostume[menu.SelectedIndex].TypeOfCostume && costume[c].Size == (user as Member).RentedCostume[menu.SelectedIndex].Size)
                         {
-                            if (costume[i] == (user as Member).RentedCostume[menu.SelectedIndex])
-                            {
-                                costume[i].NumberInStock++;
-                                break;
-                            }
+                            
+                            costume[c].NumberInStock++;
+                            (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
+                            break;
                         }
-                        (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
-                    }
-                    else
-                    {
-                        (user as Member).RentedCostume[menu.SelectedIndex].NumberInStock = 1;
-                        costume.Add((user as Member).RentedCostume[menu.SelectedIndex]);
-                        (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
-                        
+                        else if(c == costume.Count - 1)
+                        {
+                            (user as Member).RentedCostume[menu.SelectedIndex].NumberInStock = 1;
+                            costume.Add((user as Member).RentedCostume[menu.SelectedIndex]);
+                            (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
+                            break;
+                        }
                     }
                 }
                 break;
             }
             SortAllCostumes(costume);
+            SerializeCostumes(costume);
+            SerializeMembers(user.Members);
         }
         
         public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
@@ -387,6 +412,7 @@ namespace Slutuppgift
                     break;
             }
             SortAllCostumes(costume);
+            SerializeCostumes(costume);
         }
         private bool CheckIfCostumeSizeExist(List<Costume> costume, Size tempSize)
         {
@@ -438,6 +464,20 @@ namespace Slutuppgift
         {
             var jsonString = JsonConvert.SerializeObject(costume);
             string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
+            if (File.Exists(filePath) == false)
+            {
+                File.WriteAllText(filePath, jsonString);
+            }
+            else
+            {
+                File.Delete(filePath);
+                File.WriteAllText(filePath, jsonString);
+            }
+        }
+        public void SerializeMembers(List<Member> members)
+        {
+            var jsonString = JsonConvert.SerializeObject(members);
+            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
             if (File.Exists(filePath) == false)
             {
                 File.WriteAllText(filePath, jsonString);

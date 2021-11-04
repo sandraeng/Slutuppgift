@@ -28,7 +28,7 @@ namespace Slutuppgift
         public void StarterCostumes()
         {
             Costumes.AddRange(new Costume[] { new Costume(typeOfCostume: "Devil", size: Size.S, numberInStock: 2),
-            new Costume (typeOfCostume: "Devil", size: Size.M, numberInStock: 3),
+            new Costume(typeOfCostume: "Devil", size: Size.M, numberInStock: 3),
             new Costume(typeOfCostume: "Devil", size: Size.XXL, numberInStock: 1),
             new Costume(typeOfCostume: "Fairy", size: Size.M, numberInStock: 2),
             new Costume(typeOfCostume: "Fairy", size: Size.L, numberInStock: 1),

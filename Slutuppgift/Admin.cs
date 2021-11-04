@@ -8,7 +8,7 @@ namespace Slutuppgift
 {
     class Admin : User
     {
-        
+
         public Admin(string userName, string password)
         {
             UserName = userName;

@@ -8,7 +8,8 @@ namespace Slutuppgift
 {
     class User
     {
-        public List<User> Users { get; set; } = new List<User>();
+        public List<Member> Members { get; set; } = new List<Member>();
+
         public string UserName { get; set; }
         public string Password { get; set; }
     }

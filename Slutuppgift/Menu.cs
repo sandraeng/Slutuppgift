@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -49,11 +51,11 @@ namespace Slutuppgift
                 Console.Write("\n\tPassword: ");
                 string inputPassword = Console.ReadLine();
                 Console.CursorVisible = false;
-                for (int i = 0; i < user.Users.Count; i++)
+                for (int i = 0; i < user.Members.Count; i++)
                 {
-                    if ((user.Users[i] is Member) 
-                        && inputUserName.ToUpper() == user.Users[i].UserName.ToUpper() 
-                        && inputPassword.ToUpper() == user.Users[i].Password.ToUpper())
+                    if ((user.Members[i] is Member) 
+                        && inputUserName.ToUpper() == user.Members[i].UserName.ToUpper() 
+                        && inputPassword.ToUpper() == user.Members[i].Password.ToUpper())
                     {
                         Start:
                         ClearScreen();
@@ -63,10 +65,10 @@ namespace Slutuppgift
                         switch (SelectedIndex)
                         {
                             case 0:
-                                CheckInventoryMember((user.Users[i] as Member).RentedCostume);
+                                CheckInventoryMember(user.Members[i].RentedCostume);
                                 goto Start;
                             case 1:
-                                costumeRentalApp.ReturnACostume(costume, user.Users[i], menu);
+                                costumeRentalApp.ReturnACostume(costume, user.Members[i], menu);
                                 goto Start;
                             case 2:
                                 exit = false;
@@ -74,9 +76,9 @@ namespace Slutuppgift
                         }
                         break;
                     }
-                    else if((user.Users[i] is Member) && (inputUserName.ToUpper() != user.Users[i].UserName.ToUpper()
-                            || inputPassword.ToUpper() != user.Users[i].Password.ToUpper()) && i == user.Users.Count - 1
-                            || !(user.Users[i] is Member) && i == user.Users.Count - 1)
+                    else if((user.Members[i] is Member) && (inputUserName.ToUpper() != user.Members[i].UserName.ToUpper()
+                            || inputPassword.ToUpper() != user.Members[i].Password.ToUpper()) && i == user.Members.Count - 1
+                            || !(user.Members[i] is Member) && i == user.Members.Count - 1)
                     {
                         Console.WriteLine("\n\tInvalid username or Password, press ENTER to try again or press any other key to go back");
                         ConsoleKeyInfo pressedKey = Console.ReadKey(true);
@@ -92,11 +94,21 @@ namespace Slutuppgift
                     }
                 }
             }
+            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Member.json";
+            string jsonString = JsonConvert.SerializeObject(user.Members);
+            if (File.Exists(filePath) == false)
+            {
+                File.WriteAllText(filePath, jsonString);
+            }
+            else
+            {
+                File.Delete(filePath);
+                File.WriteAllText(filePath, jsonString);
+            }
         }
         private void AdminMenu(List<Costume> costume, User user, Menu menu)
         {
-            bool exit = true;
-            while (exit)
+            while (true)
             {
                 ClearScreen();
                 Console.CursorVisible = true;
@@ -106,68 +118,62 @@ namespace Slutuppgift
                 Console.Write("\n\tPassword: ");
                 string inputPassword = Console.ReadLine();
                 Console.CursorVisible = false;
-                for (int i = 0; i < user.Users.Count; i++)
+                
+                if ((user is Admin)
+                        && inputUserName.ToUpper() == user.UserName.ToUpper()
+                        && inputPassword.ToUpper() == user.Password.ToUpper())
                 {
-                    if ((user.Users[i] is Admin)
-                            && inputUserName.ToUpper() == user.Users[i].UserName.ToUpper()
-                            && inputPassword.ToUpper() == user.Users[i].Password.ToUpper())
+                    Start:
+                    ClearScreen();
+                    List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Member list", "Log out"};
+                    menuSetup = new MenuSetup("Admin", options);
+                    SelectedIndex = menuSetup.DisplaytInteractivMenu();
+                    switch (SelectedIndex)
                     {
-                        Start:
-                        ClearScreen();
-                        List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Member list", "Log out"};
-                        menuSetup = new MenuSetup("Admin", options);
-                        SelectedIndex = menuSetup.DisplaytInteractivMenu();
-                        switch (SelectedIndex)
-                        {
-                            case 0:
-                                costumeRentalApp.CreateNewCostumeMenu(costume, menu);
-                                goto Start;
-                            case 1:
-                                CheckInventory(costume);
-                                Console.Clear();
-                                goto Start;
-                            case 2:
-                                ClearScreen();
-                                if(user.Users.Count == 1)
+                        case 0:
+                            costumeRentalApp.CreateNewCostumeMenu(costume, menu);
+                            goto Start;
+                        case 1:
+                            CheckInventory(costume);
+                            Console.Clear();
+                            goto Start;
+                        case 2:
+                            ClearScreen();
+                            if(user.Members.Count == 0)
+                            {
+                                Console.WriteLine("\n\tNo members");
+                            }
+                            else
+                            {
+                                foreach (var member in user.Members)
                                 {
-                                    Console.WriteLine("\n\tNo members");
+                                    Console.WriteLine(member.ToString());
+                                    Console.WriteLine();
                                 }
-                                else
-                                {
-                                    foreach (var member in user.Users)
-                                    {
-                                        if(member is Member)
-                                        {
-                                            Console.WriteLine(member.ToString());
-                                            Console.WriteLine();
-                                        }
-                                    }
-                                }
-                                Console.ReadKey();
-                                goto Start;
-                            case 3:
-                                exit = false;
-                                break;
-                        }
+                            }
+                            Console.ReadKey();
+                            goto Start;
+                        case 3:
+                            break;
+                    }
+                    break;
+                }
+                else if ((user is Admin) && (inputUserName.ToUpper() != user.UserName.ToUpper()
+                        || inputPassword.ToUpper() != user.Password.ToUpper()) 
+                        || !(user is Admin))
+                {
+                    Console.WriteLine("\n\tInvalid username or Password, press ENTER to try again or press any other key to go back");
+                    ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+                    if (pressedKey.Key == ConsoleKey.Enter)
+                    {
+                        continue;
+                    }
+                    else
+                    {
                         break;
                     }
-                    else if ((user.Users[i] is Admin) && (inputUserName.ToUpper() != user.Users[i].UserName.ToUpper()
-                            || inputPassword.ToUpper() != user.Users[i].Password.ToUpper()) && i == user.Users.Count - 1 
-                            || !(user.Users[i] is Admin) && i == user.Users.Count - 1)
-                    {
-                        Console.WriteLine("\n\tInvalid username or Password, press ENTER to try again or press any other key to go back");
-                        ConsoleKeyInfo pressedKey = Console.ReadKey(true);
-                        if (pressedKey.Key == ConsoleKey.Enter)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            exit = false;
-                            break;
-                        }
-                    }
                 }
+                
             }
         }
         private void CheckInventory(List<Costume> costume)
