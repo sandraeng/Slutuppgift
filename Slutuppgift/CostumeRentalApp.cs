@@ -325,6 +325,7 @@ namespace Slutuppgift
                         {
                             
                             costume[c].NumberInStock++;
+                            (user as Member).PreviouslyRentedCostumes.Add((user as Member).RentedCostume[menu.SelectedIndex]);
                             (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
                             break;
                         }
@@ -332,6 +333,7 @@ namespace Slutuppgift
                         {
                             (user as Member).RentedCostume[menu.SelectedIndex].NumberInStock = 1;
                             costume.Add((user as Member).RentedCostume[menu.SelectedIndex]);
+                            (user as Member).PreviouslyRentedCostumes.Add((user as Member).RentedCostume[menu.SelectedIndex]);
                             (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
                             break;
                         }

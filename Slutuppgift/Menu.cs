@@ -59,7 +59,7 @@ namespace Slutuppgift
                     {
                         Start:
                         ClearScreen();
-                        List<string> options = new List<string> { "Check rented costume", "Return costume", "Log out" };
+                        List<string> options = new List<string> { "Check rented costume", "Return costume", "Previously rented costumes", "Log out" };
                         menuSetup = new MenuSetup("Member", options);
                         SelectedIndex = menuSetup.DisplaytInteractivMenu();
                         switch (SelectedIndex)
@@ -71,6 +71,22 @@ namespace Slutuppgift
                                 costumeRentalApp.ReturnACostume(costume, user.Members[i], menu);
                                 goto Start;
                             case 2:
+                                if(user.Members[i].PreviouslyRentedCostumes.Count == 0)
+                                {
+                                    Console.WriteLine("\n\tYou have not rented a costume before, press any key to go back");
+                                    Console.ReadKey();
+                                }
+                                else
+                                {
+                                    foreach (var c in user.Members[i].PreviouslyRentedCostumes)
+                                    {
+                                        Console.WriteLine($"\n\n\tType of costume: {c.TypeOfCostume}\n\tSize: {c.Size}");
+                                    }
+                                    Console.WriteLine("\n\n\tPress any key to go back");
+                                    Console.ReadKey();
+                                }
+                                goto Start;
+                            case 3:
                                 exit = false;
                                 break;
                         }
