@@ -9,8 +9,10 @@ namespace Slutuppgift
     class Member : User
     {
         public List<Costume> RentedCostume { get; set; } = new List<Costume>();
+        public string UserAsMember { get; set; }
         public Member(string userName, string password, List<Costume> rentedCostume)
         {
+            UserAsMember = "Member";
             UserName = userName;
             Password = password;
             RentedCostume = rentedCostume;

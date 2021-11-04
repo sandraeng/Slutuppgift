@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +16,16 @@ namespace Slutuppgift
             User admin = new Admin("Sandra", "hejsan");
             admin.Users.Add(admin);
             Menu menu = new Menu();
-            Costumes.StarterCostumes();
+            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
+            if(File.Exists(filePath) == false)
+            {
+                Costumes.StarterCostumes();
+            }
+            else
+            {
+                string jsonString = File.ReadAllText(filePath);
+                Costumes.Costumes = JsonConvert.DeserializeObject<List<Costume>>(jsonString);
+            }
             while (true)
             {
                 Console.CursorVisible = false;
@@ -35,27 +46,27 @@ namespace Slutuppgift
                 switch (menu.SelectedIndex)
                 {
                     case 0:
-                        temp = costume.FindAll(c => c is Fairy);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Fairy");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 1:
-                        temp = costume.FindAll(c => c is Devil);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Devil");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 2:
-                        temp = costume.FindAll(c => c is Superman);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Superman");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 3:
-                        temp = costume.FindAll(c => c is Spiderman);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Spiderman");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 4:
-                        temp = costume.FindAll(c => c is Vampire);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Vampire");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 5:
-                        temp = costume.FindAll(c => c is Witch);
+                        temp = costume.FindAll(c => c.TypeOfCostume == "Witch");
                         DisplayCostumeSizeOptions(temp, menu, user);
                         break;
                     case 6:
@@ -300,12 +311,14 @@ namespace Slutuppgift
                         (user as Member).RentedCostume[menu.SelectedIndex].NumberInStock = 1;
                         costume.Add((user as Member).RentedCostume[menu.SelectedIndex]);
                         (user as Member).RentedCostume.RemoveAt(menu.SelectedIndex);
+                        
                     }
                 }
                 break;
             }
             SortAllCostumes(costume);
         }
+        
         public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
         {
             menu.ClearScreen();
@@ -318,56 +331,56 @@ namespace Slutuppgift
             {
                 case 0:
                     Size tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Fairy);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Fairy");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Fairy("Fairy", tempSize, 1));
+                        costume.Add(new Costume("Fairy", tempSize, 1));
                     }
                     break;
                 case 1:
                     tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Devil);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Devil");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Devil("Devil", tempSize, 1));
+                        costume.Add(new Costume("Devil", tempSize, 1));
                     }
                     break;
                 case 2:
                     tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Superman);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Superman");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Superman("Superman", tempSize, 1));
+                        costume.Add(new Costume("Superman", tempSize, 1));
                     }
                     break;
                 case 3:
                     tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Spiderman);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Spiderman");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Spiderman("Spiderman", tempSize, 1));
+                        costume.Add(new Costume("Spiderman", tempSize, 1));
                     }
                     break;
                 case 4:
                     tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Vampire);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Vampire");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Vampire("Vampire", tempSize, 1));
+                        costume.Add(new Costume("Vampire", tempSize, 1));
                     }
                     break;
                 case 5:
                     tempSize = CostumeSizeToAdd(menu);
-                    temp = costume.FindAll(c => c is Witch);
+                    temp = costume.FindAll(c => c.TypeOfCostume == "Witch");
                     controll = CheckIfCostumeSizeExist(temp, tempSize);
                     if (!controll)
                     {
-                        costume.Add(new Witch("Witch", tempSize, 1));
+                        costume.Add(new Costume("Witch", tempSize, 1));
                     }
                     break;
                 case 6:
@@ -420,6 +433,31 @@ namespace Slutuppgift
                     break;
             }
             return size;
+        }
+        public void SerializeCostumes(List<Costume> costume)
+        {
+            var jsonString = JsonConvert.SerializeObject(costume);
+            string filePath = @"C:\Code Skola\Slutuppgift\Slutuppgift\Costume.json";
+            if (File.Exists(filePath) == false)
+            {
+                File.WriteAllText(filePath, jsonString);
+            }
+            else
+            {
+                File.Delete(filePath);
+                File.WriteAllText(filePath, jsonString);
+            }
+        }
+        public void Exit(List<Costume> costume)
+        {
+            Console.WriteLine("\n\tAre you sure? If yes press ESCAPE, if no press any other key.");
+            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
+            if (pressedKey.Key == ConsoleKey.Escape)
+            {
+                SerializeCostumes(costume);
+                Environment.Exit(0);
+            }
+
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Slutuppgift
                     AdminMenu(costume, user, menu);
                     break;
                 case 3:
-                    Exit();
+                    costumeRentalApp.Exit(costume);
                     break;
             }
         }
@@ -196,16 +196,7 @@ namespace Slutuppgift
             Console.WriteLine("\n\n\tPress any key to go back");
             Console.ReadKey();
         }
-        private void Exit()
-        {
-            Console.WriteLine("\n\tAre you sure? If yes press ESCAPE, if no press any other key.");
-            ConsoleKeyInfo pressedKey = Console.ReadKey(true);
-            if (pressedKey.Key == ConsoleKey.Escape)
-            {
-                Environment.Exit(0);
-            }
-
-        }
+        
         public void ClearScreen()
         {
             Console.SetCursorPosition(0, 0);
