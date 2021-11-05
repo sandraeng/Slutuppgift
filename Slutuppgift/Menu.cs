@@ -69,6 +69,7 @@ namespace Slutuppgift
                                 goto Start;
                             case 1:
                                 costumeRentalApp.ReturnACostume(costume, user.Members[i], menu);
+                                JsonHelper.SerializeMembers(user.Members);
                                 goto Start;
                             case 2:
                                 menu.ClearScreen();
@@ -132,7 +133,7 @@ namespace Slutuppgift
                 {
                     Start:
                     ClearScreen();
-                    List<string> options = new List<string> { "Log a new costume in the system", "Check inventory", "Member list", "Log out"};
+                    List<string> options = new List<string> { "Log a new costume in the system", "Remove a costume", "Check inventory", "Member list", "Log out"};
                     menuSetup = new MenuSetup("Admin", options);
                     SelectedIndex = menuSetup.DisplaytInteractivMenu();
                     switch (SelectedIndex)
@@ -141,11 +142,16 @@ namespace Slutuppgift
                             costumeRentalApp.CreateNewCostumeMenu(costume, menu);
                             goto Start;
                         case 1:
+                            costumeRentalApp.RemoveCostumeFromInventory(costume, menu);
+                            goto Start;
+                        case 2:
                             CheckInventory(costume);
                             Console.Clear();
                             goto Start;
-                        case 2:
+                        case 3:
                             ClearScreen();
+                            Console.WriteLine("\n\tAll current members: ");
+                            int number = 1;
                             if(user.Members.Count == 0)
                             {
                                 Console.WriteLine("\n\tNo members");
@@ -154,13 +160,16 @@ namespace Slutuppgift
                             {
                                 foreach (var member in user.Members)
                                 {
+                                    Console.WriteLine($"\n\tMember: {number} ");
                                     Console.WriteLine(member.ToString());
                                     Console.WriteLine();
+                                    number++;
                                 }
                             }
+                            Console.WriteLine("\n\tPress any key to go back");
                             Console.ReadKey();
                             goto Start;
-                        case 3:
+                        case 4:
                             break;
                     }
                     break;

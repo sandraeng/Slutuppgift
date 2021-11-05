@@ -156,7 +156,7 @@ namespace Slutuppgift
                 string userName = Console.ReadLine();
                 for (int i = 0; i <= user.Members.Count; i++)
                 {
-                    if(user.Members.Count != 0)
+                    if(user.Members.Count > 0)
                     {
                         if (user.Members[i].UserName.ToUpper() == userName.ToUpper())
                         {
@@ -172,7 +172,7 @@ namespace Slutuppgift
                             }
                         }
                     }
-                    else if(userName.Length < 3)
+                    if(userName.Length < 3)
                     {
                         Console.CursorVisible = false;
                         Console.WriteLine("\n\tThat username is to short, press ENTER to try again or press ESCAPE to go back");
@@ -222,6 +222,53 @@ namespace Slutuppgift
             }
             return true;
         }
+
+        internal void RemoveCostumeFromInventory(List<Costume> costume, Menu menu)
+        {
+            menu.ClearScreen();
+            List<Costume> temp = new List<Costume>();
+            List<string> options = new List<string> { "Fairy", "Devil", "Superman", "Spiderman", "Vampire", "Witch", "Go Back" };
+            menu.menuSetup = new MenuSetup("Chose which costume you want to remove", options);
+            menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
+            if(menu.SelectedIndex == options.Count)
+            {
+                
+            }
+            else
+            {
+                temp = costume.FindAll(c => c.TypeOfCostume == options[menu.SelectedIndex]);
+                options.Clear();
+                menu.ClearScreen();
+                for (int i = 0; i < temp.Count; i++)
+                {
+                    options.Add(temp[i].ToString());
+                }
+                options.Add("\t Go back");
+                menu.menuSetup = new MenuSetup("Chose which costume you want to remove", options);
+                menu.SelectedIndex = menu.menuSetup.DisplaytInteractivMenu();
+                for (int i = 0; i < costume.Count; i++)
+                {
+                    if(costume[i].TypeOfCostume == temp[menu.SelectedIndex].TypeOfCostume && costume[i].Size == temp[menu.SelectedIndex].Size)
+                    {
+                        if (costume[i].NumberInStock > 1)
+                        {
+                            costume[i].NumberInStock--;
+                            break;
+                        }
+                        else if(costume[i].NumberInStock == 1)
+                        {
+                            costume.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+                menu.ClearScreen();
+                Console.WriteLine("\n\n\tThe costume has been removed from inventory, press any key to go back");
+                Console.ReadKey();
+            }
+            JsonHelper.SerializeCostumes(costume);
+        }
+
         private void RentChosenCostumeMember(List<Costume> costume, Menu menu, User user)
         {
             while (true)
@@ -325,7 +372,6 @@ namespace Slutuppgift
             }
             SortAllCostumes(costume);
             JsonHelper.SerializeCostumes(costume);
-            JsonHelper.SerializeMembers(user.Members);
         }
         
         public void CreateNewCostumeMenu(List<Costume> costume, Menu menu)
@@ -397,6 +443,8 @@ namespace Slutuppgift
             }
             SortAllCostumes(costume);
             JsonHelper.SerializeCostumes(costume);
+            Console.WriteLine("\n\tCostume has been added to inventory, press any key to continue");
+            Console.ReadKey();
         }
         private bool CheckIfCostumeSizeExist(List<Costume> costume, Size tempSize)
         {
